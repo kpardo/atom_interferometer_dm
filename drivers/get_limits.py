@@ -27,9 +27,9 @@ def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light'):
 
     ## Get limits
     try:
-        lims = [cs_limit(mxs, medtype=medtype, mphi=mpr*mxs) for mpr in mphi_ratio]
+        lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs) for mpr in mphi_ratio]
     except TypeError:
-        lims = cs_limit(mxs, medtype=medtype, mphi=mphi_ratio*mxs)
+        lims = cs_limit(mxs, ex=exp, medtype=medtype, mphi=mphi_ratio*mxs)
 
     ## Save to file.
     if medtype=='light':
@@ -38,7 +38,7 @@ def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light'):
         fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}.dat'
     t = Table([mxs, lims],
         names=('mx', 'sigma'))
-    t.write(fn, format='ascii.csv')
+    t.write(fn, format='ascii.csv', overwrite=True)
     print(f'Saved to file {fn}')
     return 0
 
