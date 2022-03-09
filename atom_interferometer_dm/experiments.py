@@ -2,9 +2,10 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 from dataclasses import dataclass
+from atom_interferometer_dm.const import tp, lp
 
-lp = (1.*u.GeV*0.197e-15*u.m)**(-1)
-tp = (const.c*lp).to((u.GeV*u.s)**(-1))
+u.set_enabled_equivalencies(u.mass_energy())
+
 
 @dataclass
 class Experiment:
