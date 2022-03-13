@@ -52,7 +52,7 @@ INSTALL_REQUIRES = [
 
 # run setup.
 setup(
-    name='atom_interferometer_dm',
+    name='aidm',
     version=__version__,
     description=('routines for finding limits on DM cross sections with atom interferometers'),
     long_description=readme(),

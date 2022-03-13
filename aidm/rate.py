@@ -5,9 +5,9 @@ from dataclasses import dataclass
 from scipy.integrate import quad_vec
 from scipy.special import spherical_jn
 
-from atom_interferometer_dm.const import tp, lp, rhox, vesc, vdm
-from atom_interferometer_dm.experiments import GDM
-from atom_interferometer_dm.dm_velocity import *
+from aidm.const import tp, lp, rhox, vesc, vdm
+from aidm.experiments import GDM
+from aidm.dm_velocity import *
 
 u.set_enabled_equivalencies(u.mass_energy())
 gdm = GDM() ## to set default experiment

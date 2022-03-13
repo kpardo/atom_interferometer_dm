@@ -7,9 +7,9 @@ from scipy.special import spherical_jn
 from astropy.table import Table
 import datetime
 
-from atom_interferometer_dm.const import tp, lp, rhox, vesc, vdm
-import atom_interferometer_dm.experiments as x
-from atom_interferometer_dm.cross_sections import cs_limit
+from aidm.const import tp, lp, rhox, vesc, vdm
+import aidm.experiments as x
+from aidm.cross_sections import cs_limit
 
 exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
 mxs = np.logspace(-10, 4, 100)*u.MeV

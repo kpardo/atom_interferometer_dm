@@ -3,7 +3,7 @@ import astropy.units as u
 import astropy.constants as const
 from dataclasses import dataclass
 
-from atom_interferometer_dm.const import tp, lp, rhox, vesc, vdm
+from aidm.const import tp, lp, rhox, vesc, vdm
 
 u.set_enabled_equivalencies(u.mass_energy())
 
