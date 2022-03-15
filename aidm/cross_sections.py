@@ -16,11 +16,11 @@ gdm = GDM() ## to set default experiment
 def noise(gammavis = 0.5, ex=gdm):
     return (4*(gammavis**(-1)-1)/ex.Nmeas)**(1./2.)
 
-def bkg(gammavis=0.5):
-    return np.log(gammavis**(-1))
+def bkg(gammavis=0.5, ex=gdm):
+    return ex.etabkg*np.log(gammavis**(-1))
 
 def cs_limit(mx, ex=gdm, medtype='light', mphi=None):
-    return ((noise(ex=ex)+bkg())/rate(mx, ex=ex, medtype=medtype, mphi=mphi))*u.cm**2
+    return ((noise(ex=ex)+bkg(ex=ex))/(ex.etadm*rate(mx, ex=ex, medtype=medtype, mphi=mphi)))*u.cm**2
 
 def cs_to_axion(cs, deltamn=1.*u.GeV):
     cs = (cs*lp**2)
