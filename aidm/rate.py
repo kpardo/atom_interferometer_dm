@@ -13,7 +13,7 @@ u.set_enabled_equivalencies(u.mass_energy())
 gdm = GDM() ## to set default experiment
 
 
-def rate_prefac(mx, ex=gdm, cs=1.*u.cm**2,vdm=vdm, N0=2.4582e-9):
+def rate_prefac(mx, ex=gdm, cs=1.*u.cm**2,vdm=vdm, N0=N0(vdm=vdm, vesc=vesc)):
     cs = (cs*lp**2).to(u.GeV**(-2))
     T = (ex.Texp*tp).to(u.GeV**(-1))
     return (T*ex.N*np.pi*cs*rhox*vdm**2/(mx**3*N0)).to(u.MeV**(-2))

@@ -2,6 +2,7 @@ import numpy as np
 import astropy.units as u
 import astropy.constants as const
 from dataclasses import dataclass
+from scipy.special import erf
 
 from aidm.const import tp, lp, rhox, vesc, vdm
 
@@ -14,3 +15,9 @@ def vmin(q, mx, vesc=vesc):
 
 def expfac(q, mx, vdm=vdm, vesc=vesc):
     return np.exp(-vmin(q, mx.value)**2/vdm**2)-np.exp(-vesc**2/vdm**2)
+
+def N0(vdm=vdm, vesc=vesc):
+    prefac = np.pi**(1.5)*v0**3
+    term1 = erf(vesc/vdm)
+    term2 = -2./np.sqrt(np.pi)*vesc/vdm*np.exp(-vesc**2/vdm**2)
+    return prefac*(term1+term2)
