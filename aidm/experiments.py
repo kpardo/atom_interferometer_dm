@@ -34,7 +34,7 @@ class GDM(Experiment):
     r: float = (1.e-3*u.m*lp).to(u.MeV**(-1))
     deltax: float = (25*u.m*lp).to(u.MeV**(-1))
     Texp: float = 20.*u.s
-    Nmeas: int = int((1.*u.yr/Texp).to('')) ## old: 3.2e6
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.
     etabkg: float = 1.
 
@@ -43,12 +43,12 @@ class BECCAL(Experiment):
     name: str="BECCAL"
     N: float = 8.7e7
     A: float = 87
-    amin: float = (1.e-13*u.m/u.s**2*1./const.c).to(u.Hz) ## just gave it maqro accel.
+    amin: float = (3.e-12*u.m/u.s**2*1./const.c).to(u.Hz)
     r: float = (1.5e-4*u.m*lp).to(u.MeV**(-1))
-    deltax: float = (2.6e-3*u.m*lp).to(u.MeV**(-1))
+    deltax: float = (3.e-3*u.m*lp).to(u.MeV**(-1))
     Texp: float = 2.6*u.s
-    Nmeas: int = int((1.*u.yr/Texp).to('')) ## old: 5.2e5
-    etadm: float = 0.5 ## CHECK
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
+    etadm: float = 0.5
     etabkg: float = 0.001
 
 @dataclass
@@ -60,7 +60,7 @@ class MAQRO(Experiment):
     r: float = (120.e-9*u.m*lp).to(u.MeV**(-1))
     deltax: float = (100.e-9*u.m*lp).to(u.MeV**(-1))
     Texp: float = 100.*u.s
-    Nmeas: int = int((1.*u.yr/Texp).to('')) ## old: 6.3e5
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.0
     etabkg: float = 1.0
 
@@ -68,11 +68,11 @@ class MAQRO(Experiment):
 class Pino(Experiment):
     name: str = "Pino"
     N: float = 2.2e13
-    A: float = 93 ## check this in Pino paper!
-    amin: float = (1.e-13*u.m/u.s**2*1./const.c).to(u.Hz) ## just gave it MAQRO accel.
+    A: float = 93
+    amin: float = (2.5e-12*u.m/u.s**2*1./const.c).to(u.Hz)
     r: float = (1.e-6*u.m*lp).to(u.MeV**(-1))
     deltax: float = (290.e-9*u.m*lp).to(u.MeV**(-1))
-    Texp: float = 0.45*u.s
-    Nmeas: int = int((1.*u.yr/Texp).to('')) ## old: 5.2e5
+    Texp: float = 0.483*u.s
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
