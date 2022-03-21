@@ -10,7 +10,11 @@ u.set_enabled_equivalencies(u.mass_energy())
 
 def vmin(q, mx, vesc=vesc):
     vq = q/(2.*mx)
-    vq[vq>vesc] = vesc
+    try:
+        vq[vq>vesc] = vesc
+    except TypeError:
+        if vq > vesc:
+            vq = vesc
     return vq
 
 def expfac(q, mx, vdm=vdm, vesc=vesc):
