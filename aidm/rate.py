@@ -32,24 +32,33 @@ def helmformfac(q, ex=gdm, s=(1.e-15*u.m*lp).to(u.MeV**(-1))):
     return 3.*spherical_jn(1,q*ra.value)/(q*ra.value)*expfactor
 
 
-def rate_integral(mx, ex=gdm):
+def rate_integral(mx, ex=gdm, vdm=vdm, phase=False):
     formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
-    integrand = lambda q: q*(1-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+    if phase == True:
+        ## first integrate theta:
+        vexp = lambda theta, q: np.exp(-vmin(q, mx, theta=theta)**2/vdm**2)
+        thetaitg = lambda theta, q: np.sin(theta)*np.sin(q*ex.deltax.value)*vexp(theta,q)
+        integrand = lambda q: q*(quad_vec(thetaitg, 0, np.pi, args=q))*formfacexp(q)
+    else:
+        integrand = lambda q: q*(1-np.sin(q*ex.deltax.value))/(q*ex.deltax.value)*formfacexp(q)*expfac(q, mx)
     return quad_vec(integrand, ex.qmin.value, np.inf)[0]*u.MeV**2
 
-def light_rate_integral(mx, ex=gdm, mphi=None):
+def light_rate_integral(mx, ex=gdm, mphi=None, phase=False):
     if mphi == None:
         mphi = 1.e-5*mx
     formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
-    integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+    if phase == False:
+        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+    else:
+        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1-np.cos(q*ex.deltax.value))/(q*ex.deltax.value)*formfacexp(q)*expfac(q, mx)
     return quad_vec(integrand, ex.qmin.value, np.inf)[0]*u.MeV**(-2)
 
-def rate(mx, ex=gdm, medtype = 'light', mphi=None):
+def rate(mx, ex=gdm, medtype = 'light', mphi=None, phase=False):
     if medtype == 'heavy':
         rp = rate_prefac(mx, ex=ex)
-        ri = rate_integral(mx, ex=ex)
+        ri = rate_integral(mx, ex=ex, phase=phase)
 
     elif medtype == 'light':
         rp = light_rate_prefac(mx, ex=ex)
-        ri = light_rate_integral(mx, ex=ex, mphi=mphi)
+        ri = light_rate_integral(mx, ex=ex, mphi=mphi, phase=phase)
     return rp*ri

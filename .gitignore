@@ -4,3 +4,4 @@ results/*/old/
 */.ipynb_checkpoints/*
 *.egg-info/*
 */*.pptx
+notes/*

@@ -14,10 +14,12 @@ from aidm.cross_sections import cs_limit
 exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
 mxs = np.logspace(-10, 4, 100)*u.MeV
 mphiratios = [1.e-10, 1.e-7, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
-get_noqmin = True
+qmin = True
 med = 'light'
+phase = True
 
-def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light'):
+def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light',
+    phase = phase):
     print(f'{datetime.datetime.now()}: Getting limits for {ex} with qmin={qmin}')
     ## Define exp. w/ qmin
     class_ = getattr(x, ex)
@@ -33,13 +35,18 @@ def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light'):
 
     ## Save to file.
     if medtype == 'heavy':
-        fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}.dat'
+        fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}'
     else:
         try:
             len(mphi_ratio)
-            fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}.dat'
+            fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}'
         except TypeError:
-            fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}_{int(-1.*np.log10(mphi_ratio))}.dat'
+            fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}_{int(-1.*np.log10(mphi_ratio))}'
+
+    if phase == True:
+        fn += "_phase.dat"
+    else:
+        fn += ".dat"
 
     tm = Table()
     tm['mx'] = mxs
@@ -66,6 +73,6 @@ def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light'):
 
 ## Run
 for ex in exps:
-    get_lim(ex, medtype=med)
-    if get_noqmin:
-        get_lim(ex, qmin=False, medtype=med)
+    get_lim(ex, medtype=med, qmin=qmin)
+    # if get_noqmin:
+    #     get_lim(ex, qmin=False, medtype=med)
