@@ -13,13 +13,19 @@ u.set_enabled_equivalencies(u.mass_energy())
 gdm = GDM() ## to set default experiment
 
 
-def noise(gammavis = 0.5, ex=gdm):
+def cs_limit(mx, ave={'v':0.5, 'phi':ex.phimin}, std={'v':0.1*0.5, 'phi':0.1*ex.phimin},
+            ex=gdm, medtype='light',mphi=None, phase=False):
+    if phase:
+        return (ave['phi']+std['phi'])/rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
+    return (ave['v']+std['v'])/rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
+
+def noise_mod(gammavis = 0.5, ex=gdm):
     return (4*(gammavis**(-1)-1)/ex.Nmeas)**(1./2.)
 
-def bkg(gammavis=0.5, ex=gdm):
+def bkg_mod(gammavis=0.5, ex=gdm):
     return ex.etabkg*np.log(gammavis**(-1))
 
-def cs_limit(mx, ex=gdm, medtype='light', mphi=None, phase=False):
+def cs_limit_mod(mx, ex=gdm, medtype='light', mphi=None, phase=False):
     return ((noise(ex=ex)+bkg(ex=ex))/(ex.etadm*rate(mx, ex=ex, medtype=medtype, mphi=mphi, phase=phase)))*u.cm**2
 
 def cs_to_axion(cs, deltamn=1.*u.GeV):
