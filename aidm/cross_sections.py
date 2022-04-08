@@ -19,8 +19,8 @@ def noise(gammavis = 0.5, ex=gdm):
 def bkg(gammavis=0.5, ex=gdm):
     return ex.etabkg*np.log(gammavis**(-1))
 
-def cs_limit(mx, ex=gdm, medtype='light', mphi=None):
-    return ((noise(ex=ex)+bkg(ex=ex))/(ex.etadm*rate(mx, ex=ex, medtype=medtype, mphi=mphi)))*u.cm**2
+def cs_limit(mx, ex=gdm, medtype='light', mphi=None, phase=False):
+    return ((noise(ex=ex)+bkg(ex=ex))/(ex.etadm*rate(mx, ex=ex, medtype=medtype, mphi=mphi, phase=phase)))*u.cm**2
 
 def cs_to_axion(cs, deltamn=1.*u.GeV):
     cs = (cs*lp**2)

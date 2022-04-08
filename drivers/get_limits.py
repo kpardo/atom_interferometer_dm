@@ -11,27 +11,30 @@ from aidm.const import tp, lp, rhox, vesc, vdm
 import aidm.experiments as x
 from aidm.cross_sections import cs_limit
 
-exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
-mxs = np.logspace(-10, 4, 100)*u.MeV
+exps = ['MAQRO', 'GDM', 'Pino', 'BECCAL']
+mxs = np.logspace(-3.5, 3.5, 1000)*u.MeV
 mphiratios = [1.e-10, 1.e-7, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
-qmin = True
-med = 'light'
-phase = True
+qmin = False
+med = 'heavy'
+phase = False
 
 def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light',
     phase = phase):
-    print(f'{datetime.datetime.now()}: Getting limits for {ex} with qmin={qmin}')
+    if phase:
+        print(f'{datetime.datetime.now()}: Getting phase limits for {ex} with qmin={qmin}')
+    else:
+        print(f'{datetime.datetime.now()}: Getting decoherence limits for {ex} with qmin={qmin}')
     ## Define exp. w/ qmin
     class_ = getattr(x, ex)
     exp = class_()
     if qmin == False:
-        exp.qmin = 1.e-20*u.MeV
+        exp.qmin = 1.e-30*u.MeV
 
     ## Get limits
     try:
-        lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs) for mpr in mphi_ratio]
+        lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs, phase=phase) for mpr in mphi_ratio]
     except TypeError:
-        lims = cs_limit(mxs, ex=exp, medtype=medtype, mphi=mphi_ratio*mxs)
+        lims = cs_limit(mxs, ex=exp, medtype=medtype, mphi=mphi_ratio*mxs, phase=phase)
 
     ## Save to file.
     if medtype == 'heavy':

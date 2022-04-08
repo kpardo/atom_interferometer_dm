@@ -34,23 +34,29 @@ def helmformfac(q, ex=gdm, s=(1.e-15*u.m*lp).to(u.MeV**(-1))):
 
 def rate_integral(mx, ex=gdm, vdm=vdm, phase=False):
     formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
-    if phase == True:
+    if phase == False:
+        integrand = lambda q: q*(1.-np.sin(q*ex.deltax.value))/(q*ex.deltax.value)*formfacexp(q)*expfac(q, mx)
+    else:
         ## first integrate theta:
         vexp = lambda theta, q: np.exp(-vmin(q, mx, theta=theta)**2/vdm**2)
         thetaitg = lambda theta, q: np.sin(theta)*np.sin(q*ex.deltax.value)*vexp(theta,q)
         integrand = lambda q: q*(quad_vec(thetaitg, 0, np.pi, args=q))*formfacexp(q)
-    else:
-        integrand = lambda q: q*(1-np.sin(q*ex.deltax.value))/(q*ex.deltax.value)*formfacexp(q)*expfac(q, mx)
+
     return quad_vec(integrand, ex.qmin.value, np.inf)[0]*u.MeV**2
+
+def theta_integral(q, mx, ex=gdm, mphi=None, phase=True):
+    vexp = lambda theta: np.exp(-vmin(q, mx.value, theta=theta)**2/vdm**2)
+    thetaitg = lambda theta: np.sin(theta)*np.sin(q*ex.deltax.value*np.cos(theta))*vexp(theta)
+    return quad_vec(thetaitg, 0, np.pi)[0]
 
 def light_rate_integral(mx, ex=gdm, mphi=None, phase=False):
     if mphi == None:
         mphi = 1.e-5*mx
     formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
     if phase == False:
-        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
     else:
-        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1-np.cos(q*ex.deltax.value))/(q*ex.deltax.value)*formfacexp(q)*expfac(q, mx)
+        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(theta_integral(q,mx, ex=ex, mphi=mphi))*formfacexp(q)
     return quad_vec(integrand, ex.qmin.value, np.inf)[0]*u.MeV**(-2)
 
 def rate(mx, ex=gdm, medtype = 'light', mphi=None, phase=False):

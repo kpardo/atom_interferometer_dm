@@ -4,12 +4,12 @@ import astropy.constants as const
 from dataclasses import dataclass
 from scipy.special import erf
 
-from aidm.const import tp, lp, rhox, vesc, vdm
+from aidm.const import tp, lp, rhox, vesc, vdm, ve
 
 u.set_enabled_equivalencies(u.mass_energy())
 
-def vmin(q, mx, vesc=vesc, theta=0.):
-    vq = q/(2.*mx*np.cos(theta))
+def vmin(q, mx, vesc=vesc, ve=ve, theta=0.):
+    vq = 1/q*np.abs(ve*np.cos(theta)+(q/(2.*mx)))
     try:
         vq[vq>vesc] = vesc
     except TypeError:
