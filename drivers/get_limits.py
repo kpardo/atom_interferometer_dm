@@ -13,22 +13,19 @@ from aidm.cross_sections import cs_limit
 
 exps = ['MAQRO', 'GDM', 'Pino', 'BECCAL']
 mxs = np.logspace(-3.5, 3.5, 1000)*u.MeV
-mphiratios = [1.e-10, 1.e-7, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
-qmin = False
-med = 'heavy'
+mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
+med = 'light'
 phase = False
 
-def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light',
+def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
     phase = phase):
     if phase:
-        print(f'{datetime.datetime.now()}: Getting phase limits for {ex} with qmin={qmin}')
+        print(f'{datetime.datetime.now()}: Getting phase limits for {ex}')
     else:
-        print(f'{datetime.datetime.now()}: Getting decoherence limits for {ex} with qmin={qmin}')
+        print(f'{datetime.datetime.now()}: Getting decoherence limits for {ex}')
     ## Define exp. w/ qmin
     class_ = getattr(x, ex)
     exp = class_()
-    if qmin == False:
-        exp.qmin = 1.e-30*u.MeV
 
     ## Get limits
     try:
@@ -38,13 +35,13 @@ def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light',
 
     ## Save to file.
     if medtype == 'heavy':
-        fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}'
+        fn = f'../results/limits/{ex}_{medtype[0]}'
     else:
         try:
             len(mphi_ratio)
-            fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}'
+            fn = f'../results/limits/{ex}_{medtype[0]}'
         except TypeError:
-            fn = f'../results/limits/{ex}_{qmin}_{medtype[0]}_{int(-1.*np.log10(mphi_ratio))}'
+            fn = f'../results/limits/{ex}_{medtype[0]}_{int(-1.*np.log10(mphi_ratio))}'
 
     if phase == True:
         fn += "_phase.dat"
@@ -76,6 +73,4 @@ def get_lim(ex, qmin=True, mphi_ratio = mphiratios, medtype='light',
 
 ## Run
 for ex in exps:
-    get_lim(ex, medtype=med, qmin=qmin)
-    # if get_noqmin:
-    #     get_lim(ex, qmin=False, medtype=med)
+    get_lim(ex, medtype=med, phase=phase)

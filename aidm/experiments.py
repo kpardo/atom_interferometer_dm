@@ -17,13 +17,14 @@ class Experiment:
     deltax: float
     Nmeas: float
     Texp: float
+    phimin: float
+    qmin: float = 1.e-20*u.MeV
 
     def __post_init__(self):
         self.mT = (const.m_p*self.N).to(u.MeV)
-        self.qmin = self.get_qmin()
 
-    def get_qmin(self):
-        return (0.5*self.mT*self.amin*self.Texp).to(u.MeV)
+    #def get_qmin(self):
+    #    return (0.5*self.mT*self.amin*self.Texp).to(u.MeV)
 
 @dataclass
 class GDM(Experiment):
@@ -37,6 +38,7 @@ class GDM(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.
     etabkg: float = 1.
+    phimin: float = 1.4e-10
 
 @dataclass
 class BECCAL(Experiment):
@@ -50,6 +52,7 @@ class BECCAL(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
+    phimin: float = 8.6e-6
 
 @dataclass
 class MAQRO(Experiment):
@@ -63,6 +66,7 @@ class MAQRO(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.0
     etabkg: float = 1.0
+    phimin: float = 2.5e-10
 
 @dataclass
 class Pino(Experiment):
@@ -76,3 +80,4 @@ class Pino(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
+    phimin: float = 4.0e-4
