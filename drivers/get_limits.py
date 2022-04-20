@@ -9,29 +9,37 @@ import datetime
 
 from aidm.const import tp, lp, rhox, vesc, vdm
 import aidm.experiments as x
-from aidm.cross_sections import cs_limit
+from aidm.cross_sections import cs_limit, cs_limit_mod
 
-exps = ['MAQRO', 'GDM', 'Pino', 'BECCAL']
-mxs = np.logspace(-3.5, 3.5, 1000)*u.MeV
-mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
-med = 'light'
-phase = False
+exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
+mxs = np.logspace(-6.5, 3.5, 100)*u.MeV
+# mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
+# mphiratios = [1.e-5, 1.e-3]
+mphiratios = 1.
+med = 'heavy'
+phase = True
 
 def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
     phase = phase):
+
     if phase:
-        print(f'{datetime.datetime.now()}: Getting phase limits for {ex}')
+        print(f'{datetime.datetime.now()}: Getting {medtype} mediator phase limits for {ex}')
     else:
-        print(f'{datetime.datetime.now()}: Getting decoherence limits for {ex}')
+        print(f'{datetime.datetime.now()}: Getting {medtype} mediator decoherence limits for {ex}')
     ## Define exp. w/ qmin
     class_ = getattr(x, ex)
     exp = class_()
 
     ## Get limits
-    try:
-        lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs, phase=phase) for mpr in mphi_ratio]
-    except TypeError:
-        lims = cs_limit(mxs, ex=exp, medtype=medtype, mphi=mphi_ratio*mxs, phase=phase)
+    if (phase) and (med == 'light'):
+        lims = [[cs_limit(mx, ex=exp, medtype=medtype, mphi=mpr*mx, phase=phase) for mx in mxs] for mpr in mphi_ratio]
+    elif (phase) and (med == 'heavy'):
+        lims = [cs_limit(mx, ex=exp, medtype=medtype, phase=phase) for mx in mxs]
+    else:
+        try:
+            lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs, phase=phase) for mpr in mphi_ratio]
+        except TypeError:
+            lims = cs_limit(mxs, ex=exp, medtype=medtype, mphi=mphi_ratio*mxs, phase=phase)
 
     ## Save to file.
     if medtype == 'heavy':
@@ -67,8 +75,11 @@ def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
             old = ['col0']
     t.rename_columns(names=old, new_names=names)
     t.write(fn, format='ascii.ecsv', overwrite=True)
-    print(f'Best cross section is {np.min(lims)} at mx = {mxs[np.argmin(lims)]}.')
     print(f'{datetime.datetime.now()}: Saved to file {fn}')
+    try:
+        print(f'Best cross section is {np.min(lims)} at mx = {mxs[np.argmin(lims)]}.')
+    except:
+        return 0
     return 0
 
 ## Run

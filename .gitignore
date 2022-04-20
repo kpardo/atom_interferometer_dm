@@ -1,4 +1,5 @@
 old/*
+drivers/tests/*
 results/*/old/
 */__pycache__/*
 */.ipynb_checkpoints/*

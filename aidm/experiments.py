@@ -18,7 +18,7 @@ class Experiment:
     Nmeas: float
     Texp: float
     phimin: float
-    qmin: float = 1.e-20*u.MeV
+    qmin: float = 1.e-30*u.MeV
 
     def __post_init__(self):
         self.mT = (const.m_p*self.N).to(u.MeV)

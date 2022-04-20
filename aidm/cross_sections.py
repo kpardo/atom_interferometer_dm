@@ -17,8 +17,11 @@ def cs_limit(mx, ex=gdm, medtype='light',mphi=None, phase=False):
     ave={'v':0.5, 'phi':1.*ex.phimin}
     std={'v':0.1*0.5, 'phi':1.*ex.phimin}
     if phase:
-        return (ave['phi'])/rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
-    return (ave['v']+std['v'])/rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
+        return (ave['phi'])/rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*ex.Nmeas**(1./2.)*u.cm**2
+    else:
+        max_V = ave['v'] - std['v'] ## e.g., 1 sigma lower than average.
+        smin = -1.*np.log(max_V)
+        return (smin/ex.Nmeas**(0.5))*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
 
 def noise_mod(gammavis = 0.5, ex=gdm):
     return (4*(gammavis**(-1)-1)/ex.Nmeas)**(1./2.)
@@ -27,7 +30,7 @@ def bkg_mod(gammavis=0.5, ex=gdm):
     return ex.etabkg*np.log(gammavis**(-1))
 
 def cs_limit_mod(mx, ex=gdm, medtype='light', mphi=None, phase=False):
-    return ((noise(ex=ex)+bkg(ex=ex))/(ex.etadm*rate(mx, ex=ex, medtype=medtype, mphi=mphi, phase=phase)))*u.cm**2
+    return ((noise_mod(ex=ex)+bkg_mod(ex=ex))/(ex.etadm*rate(mx, ex=ex, medtype=medtype, mphi=mphi, phase=phase)))*u.cm**2
 
 def cs_to_axion(cs, deltamn=1.*u.GeV):
     cs = (cs*lp**2)

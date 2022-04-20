@@ -9,7 +9,8 @@ from aidm.const import tp, lp, rhox, vesc, vdm, ve
 u.set_enabled_equivalencies(u.mass_energy())
 
 def vmin(q, mx, vesc=vesc, ve=ve, theta=0.):
-    vq = 1/q*np.abs(ve*np.cos(theta)+(q/(2.*mx)))
+    # vq = 1/q*np.abs(ve*np.cos(theta)+(q**2/(2.*mx)))
+    vq = q/(2.*mx)
     try:
         vq[vq>vesc] = vesc
     except TypeError:
