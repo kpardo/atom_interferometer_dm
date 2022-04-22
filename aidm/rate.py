@@ -71,7 +71,7 @@ def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
     if phase:
         integrand = lambda q: q*phase_integral(q, mx.value, ex=gdm)*formfacexp(q)
         if exactphase:
-            return quad_vec(integrand, 0., 1./ex.r.value+100.)[0]*u.MeV**(-2)
+            return quad_vec(integrand, 0., 1./ex.r.value+1.e10)[0]*u.MeV**(-2)
         else:
             ### this is good to ~1% for GDM, but doesn't fit all other exp.
             # qs = np.logspace(np.log10(1./ex.deltax.value)-4.5, np.log10(1./ex.deltax.value)+2, 30000)
@@ -79,7 +79,7 @@ def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
             qs = np.logspace(np.log10(1./ex.deltax.value)-10, np.log10(1./ex.deltax.value)+10, 100000)
             return simpson(integrand(qs), x=qs)*u.MeV**(-2)
     else:
-        integrand = lambda q: q*(1-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+        integrand = lambda q: q*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
     return quad_vec(integrand, 0., np.inf)[0]*u.MeV**2
 
 def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
@@ -89,7 +89,7 @@ def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
     if phase:
         integrand = lambda q: q/(q**2 + mphi.value**2)**2*phase_integral(q, mx.value, ex=gdm)*formfacexp(q)
         if exactphase:
-            return quad_vec(integrand, 0., 1./ex.r.value+100.)[0]*u.MeV**(-2)
+            return quad_vec(integrand, 0., 1./ex.r.value+1.e10)[0]*u.MeV**(-2)
         else:
             ### this is good to ~1% for GDM, but doesn't fit all other exp.
             # qs = np.logspace(np.log10(1./ex.deltax.value)-4.5, np.log10(1./ex.deltax.value)+2, 30000)

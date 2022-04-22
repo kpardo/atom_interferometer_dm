@@ -12,7 +12,8 @@ import aidm.experiments as x
 from aidm.cross_sections import cs_limit, cs_limit_mod
 
 exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
-mxs = np.logspace(-6.5, 3.5, 100)*u.MeV
+mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
+# mxs = np.logspace(-6.5, 3.5, 100)*u.MeV
 # mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
 # mphiratios = [1.e-5, 1.e-3]
 mphiratios = 1.
@@ -40,7 +41,6 @@ def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
             lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs, phase=phase) for mpr in mphi_ratio]
         except TypeError:
             lims = cs_limit(mxs, ex=exp, medtype=medtype, mphi=mphi_ratio*mxs, phase=phase)
-
     ## Save to file.
     if medtype == 'heavy':
         fn = f'../results/limits/{ex}_{medtype[0]}'
