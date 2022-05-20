@@ -14,14 +14,15 @@ gdm = GDM() ## to set default experiment
 
 
 def cs_limit(mx, ex=gdm, medtype='light',mphi=None, phase=False):
-    ave={'v':0.5, 'phi':1.*ex.phimin}
+    ave={'v':0.5, 'phi':0.}
     std={'v':0.1*0.5, 'phi':1.*ex.phimin}
     if phase:
-        return (ave['phi'])/rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*ex.Nmeas**(1./2.)*u.cm**2
+        return (std['phi'])*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
     else:
         max_V = ave['v'] - std['v'] ## e.g., 1 sigma lower than average.
-        smin = -1.*np.log(max_V)
-        return (smin/ex.Nmeas**(0.5))*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
+        stds = std['v']/ave['v']
+        # smin = -1.*np.log(max_V)
+        return ((stds+(-1.*np.log(ave['v'])))/ex.Nmeas**(0.5))*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase)*u.cm**2
 
 def noise_mod(gammavis = 0.5, ex=gdm):
     return (4*(gammavis**(-1)-1)/ex.Nmeas)**(1./2.)

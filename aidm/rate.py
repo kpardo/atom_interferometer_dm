@@ -21,7 +21,7 @@ def rate_prefac(mx, ex=gdm, cs=1.*u.cm**2,vdm=vdm, N0=N0(vdm=vdm, vesc=vesc)):
     T = (ex.Texp*tp).to(u.GeV**(-1))
     return (T*ex.N*np.pi*cs*rhox*vdm**2/(mx**3*N0)).to(u.MeV**(-2))
 
-def light_rate_prefac(mx, ex=gdm, mphi=None, cs=1.*u.cm**2,vdm=vdm, N0=2.4582e-9):
+def light_rate_prefac(mx, ex=gdm, mphi=None, cs=1.*u.cm**2,vdm=vdm, N0=N0(vdm=vdm, vesc=vesc)):
     if mphi == None:
         mphi = 1.e-5*mx
     cs = (cs*lp**2).to(u.GeV**(-2))
@@ -36,7 +36,7 @@ def helmformfac(q, ex=gdm, s=(1.e-15*u.m*lp).to(u.MeV**(-1))):
     ra = ex.A**(1./3.)*(1.2e-15*u.m*lp).to(u.MeV**(-1))
     return 3.*spherical_jn(1,q*ra.value)/(q*ra.value)*expfactor
 
-def phase_integral(q, mx, ex=gdm, vdm=vdm, ve=ve, vesc=vesc):
+def phase_integral(q, mx, ex=gdm, vdm=vdm, ve=ve, vesc=vesc, real=True):
     ## first check vmin:
     # vmin = vesc - 1/q*np.abs(q*ve + q**2/(2*mx))
     # try:
@@ -55,7 +55,10 @@ def phase_integral(q, mx, ex=gdm, vdm=vdm, ve=ve, vesc=vesc):
     term2b = 1.*erf((q/mx+2*ve+1.j*q*vdm**2*ex.deltax.value/ve)/(2*vdm))
     term2 = term2mult*(term2a + term2b)
     term3 = erfc((q/mx+2*ve-1.j*q*vdm**2*ex.deltax.value/ve)/(2*vdm))
-    res = np.real(prefac*(term1 + term2 + term3))
+    if real:
+        res = np.real(prefac*(term1 + term2 + term3))
+    if real == False:
+        res = np.imag(prefac*(term1 + term2 + term3))
     # res[vmin < 0] = 0.
     try:
         # print(res)
@@ -69,7 +72,7 @@ def phase_integral(q, mx, ex=gdm, vdm=vdm, ve=ve, vesc=vesc):
 def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
     formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
     if phase:
-        integrand = lambda q: q*phase_integral(q, mx.value, ex=gdm)*formfacexp(q)
+        integrand = lambda q: q*phase_integral(q, mx.value, ex=ex)*formfacexp(q)
         if exactphase:
             return quad_vec(integrand, 0., 1./ex.r.value+1.e10)[0]*u.MeV**(-2)
         else:
@@ -87,7 +90,7 @@ def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
         mphi = 1.e-5*mx
     formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
     if phase:
-        integrand = lambda q: q/(q**2 + mphi.value**2)**2*phase_integral(q, mx.value, ex=gdm)*formfacexp(q)
+        integrand = lambda q: q/(q**2 + mphi.value**2)**2*phase_integral(q, mx.value, ex=ex)*formfacexp(q)
         if exactphase:
             return quad_vec(integrand, 0., 1./ex.r.value+1.e10)[0]*u.MeV**(-2)
         else:
@@ -97,8 +100,8 @@ def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
             qs = np.logspace(np.log10(1./ex.deltax.value)-10, np.log10(1./ex.deltax.value)+10, 100000)
             return simpson(integrand(qs), x=qs)*u.MeV**(-2)
     else:
-        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
-        return quad_vec(integrand, 0., np.inf)[0]*u.MeV**(-2)
+        integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+        return quad_vec(integrand, 1.e-40, np.inf)[0]*u.MeV**(-2)
 
 
 def rate(mx, ex=gdm, medtype = 'light', mphi=None, phase=False):

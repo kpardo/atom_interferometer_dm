@@ -14,9 +14,10 @@ from aidm.cross_sections import cs_limit, cs_limit_mod
 exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
 mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
 # mxs = np.logspace(-6.5, 3.5, 100)*u.MeV
-# mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
+mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
 # mphiratios = [1.e-5, 1.e-3]
 mphiratios = 1.
+# mphiratios = (1.*u.eV).to(u.MeV).value
 med = 'heavy'
 phase = True
 
@@ -36,6 +37,10 @@ def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
         lims = [[cs_limit(mx, ex=exp, medtype=medtype, mphi=mpr*mx, phase=phase) for mx in mxs] for mpr in mphi_ratio]
     elif (phase) and (med == 'heavy'):
         lims = [cs_limit(mx, ex=exp, medtype=medtype, phase=phase) for mx in mxs]
+    elif (phase) and (med == 'fixed_light'):
+        lims = [cs_limit(mx, ex=exp, medtype='light', mphi=mphiratios*u.MeV, phase=phase) for mx in mxs]
+    elif (~phase) and (med == 'fixed_light'):
+        lims = cs_limit(mxs, ex=exp, medtype='light', mphi=mphiratios*u.MeV, phase=phase)
     else:
         try:
             lims = [cs_limit(mxs, ex=exp, medtype=medtype, mphi=mpr*mxs, phase=phase) for mpr in mphi_ratio]
