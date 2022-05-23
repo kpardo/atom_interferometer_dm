@@ -1,3 +1,11 @@
+'''
+this script gets the cross section limits for given inputs.
+inputs: mediator type, phase
+
+example:
+python get_limits.py 'light' True
+'''
+
 import numpy as np
 import astropy.units as u
 import astropy.constants as const
@@ -6,6 +14,7 @@ from scipy.integrate import quad_vec
 from scipy.special import spherical_jn
 from astropy.table import Table, hstack
 import datetime
+import sys
 
 from aidm.const import tp, lp, rhox, vesc, vdm
 import aidm.experiments as x
@@ -13,13 +22,21 @@ from aidm.cross_sections import cs_limit, cs_limit_mod
 
 exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
 mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
-# mxs = np.logspace(-6.5, 3.5, 100)*u.MeV
-mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
-# mphiratios = [1.e-5, 1.e-3]
-mphiratios = 1.
-# mphiratios = (1.*u.eV).to(u.MeV).value
-med = 'heavy'
-phase = True
+
+try:
+    med = sys.argv[1]
+    phase = bool(sys.argv[2])
+except:
+    print("Oops you didn't give an input! Running default.")
+    med = 'light'
+    phase = False
+
+if med == 'light':
+    mphiratios = [1.e-10, 1.e-9, 1.e-7, 1.e-6, 1.e-5, 1.e-4, 1.e-3, 1.e-2]
+elif med == 'fixed_light':
+    mphiratios = (1.*u.eV).to(u.MeV).value
+else:
+    mphiratios = 1.
 
 def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
     phase = phase):
