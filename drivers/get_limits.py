@@ -3,7 +3,7 @@ this script gets the cross section limits for given inputs.
 inputs: mediator type, phase
 
 example:
-python get_limits.py 'light' True
+python get_limits.py 'light' False
 '''
 
 import numpy as np
@@ -25,9 +25,10 @@ mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
 
 try:
     med = sys.argv[1]
-    phase = bool(sys.argv[2])
+    phase = eval(sys.argv[2])
+    assert isinstance(phase, bool)
 except:
-    print("Oops you didn't give an input! Running default.")
+    print("Oops you didn't give a valid input! Running default.")
     med = 'light'
     phase = False
 
@@ -40,7 +41,6 @@ else:
 
 def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
     phase = phase):
-
     if phase:
         print(f'{datetime.datetime.now()}: Getting {medtype} mediator phase limits for {ex}')
     else:
