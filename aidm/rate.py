@@ -31,8 +31,8 @@ def light_rate_prefac(mx, ex=gdm, mphi=None, cs=1.*u.cm**2,vdm=vdm, N0=N0(vdm=vd
 def formfac(x):
     return 3.*spherical_jn(1,x)/x
 
-def helmformfac(q, ex=gdm, s=(1.e-15*u.m*lp).to(u.MeV**(-1))):
-    expfactor = np.exp(-q**2/s.value**2)
+def helmformfac(q, ex=gdm, s=(0.9e-15*u.m*lp).to(u.MeV**(-1))):
+    expfactor = np.exp(-0.5*q**2*s.value**2)
     ra = ex.A**(1./3.)*(1.2e-15*u.m*lp).to(u.MeV**(-1))
     return 3.*spherical_jn(1,q*ra.value)/(q*ra.value)*expfactor
 
