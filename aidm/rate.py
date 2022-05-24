@@ -82,6 +82,11 @@ def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
             qs = np.logspace(np.log10(1./ex.deltax.value)-10, np.log10(1./ex.deltax.value)+10, 100000)
             return simpson(integrand(qs), x=qs)*u.MeV**(-2)
     else:
+        if ex.name in ['GDM', 'BECCAL']:
+            ## for GDM and BECCAL, if in heavy med limit, helm form factor
+            ## introduces numerical instability, but doesn't affect low mx
+            ## limits. So, just take out.
+            formfacexp = lambda q: (1+ex.N*(formfac(q*ex.r.value))**2)
         integrand = lambda q: q*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
     return quad_vec(integrand, 0., np.inf)[0]*u.MeV**2
 
