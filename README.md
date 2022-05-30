@@ -1,4 +1,4 @@
-This respository contains all of the scripts needed to perform the analysis and create the plots from arXiv: 2205.XXXX. 
+This respository contains all of the scripts needed to perform the analysis and create the plots from [arXiv:2205.13546](https://arxiv.org/abs/2205.13546). 
 
 To use this package, run [`setup.py`](setup.py) with the ``develop`` or
 ``install`` option.
