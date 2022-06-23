@@ -8,3 +8,5 @@ results/old/*
 *.egg-info/*
 */*.pptx
 notes/*
+talks/*
+paper/*
