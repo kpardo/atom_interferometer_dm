@@ -82,7 +82,7 @@ def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
             qs = np.logspace(np.log10(1./ex.deltax.value)-10, np.log10(1./ex.deltax.value)+10, 100000)
             return simpson(integrand(qs), x=qs)*u.MeV**(-2)
     else:
-        if ex.name in ['GDM', 'BECCAL']:
+        if ex.name in ['GDM', 'BECCAL', 'Stanford']:
             ## for GDM and BECCAL, if in heavy med limit, helm form factor
             ## introduces numerical instability, but doesn't affect low mx
             ## limits. So, just take out.
@@ -93,7 +93,13 @@ def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
 def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
     if mphi == None:
         mphi = 1.e-5*mx
-    formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
+
+    if ex.name in ['GDM', 'BECCAL', 'Stanford']:
+        formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(np.exp(-(0.5*q*ex.r.value)**2))**2)
+
+    else:
+        formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
+
     if phase:
         integrand = lambda q: q/(q**2 + mphi.value**2)**2*phase_integral(q, mx.value, ex=ex)*formfacexp(q)
         if exactphase:
@@ -106,7 +112,7 @@ def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
             return simpson(integrand(qs), x=qs)*u.MeV**(-2)
     else:
         integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
-        return quad_vec(integrand, 1.e-40, np.inf)[0]*u.MeV**(-2)
+        return quad_vec(integrand, 1.e-40, 1.)[0]*u.MeV**(-2)
 
 
 def rate(mx, ex=gdm, medtype = 'light', mphi=None, phase=False):

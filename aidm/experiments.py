@@ -77,3 +77,15 @@ class Pino(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
+
+@dataclass
+class Stanford(Experiment):
+    ## drop tower described in Asenbaum + (2020) PRL
+    name: str = 'Stanford'
+    N: float = 87*4.e6
+    A: float = 87
+    amin: float = (1.372e-10*u.m/u.s**2*1./const.c).to(u.Hz)
+    r: float = (200.e-6*u.m*lp).to(u.MeV**(-1))
+    deltax: float = (0.067*u.m*lp).to(u.MeV**(-1))
+    Texp: float = 1.910*u.s
+    Nmeas: int = int((1.*u.yr/Texp).to(''))

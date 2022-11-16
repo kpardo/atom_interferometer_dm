@@ -20,8 +20,7 @@ from aidm.const import tp, lp, rhox, vesc, vdm
 import aidm.experiments as x
 from aidm.cross_sections import cs_limit, cs_limit_mod
 
-# exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL']
-exps = ['BECCAL']
+exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL', 'Stanford']
 mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
 
 try:
@@ -54,14 +53,19 @@ def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
     if (phase) and (med == 'light'):
         lims = [[cs_limit(mx, ex=exp, medtype=medtype, mphi=mpr*mx, phase=phase) for mx in mxs] for mpr in mphi_ratio]
     elif (phase) and (med == 'heavy'):
-        lims = [cs_limit(mx, ex=exp, medtype=medtype, phase=phase) for mx in mxs]
-    elif (~phase) and (med == 'heavy'):
-        if ex in ['BECCAL', 'GDM']:
+        if ex in ['BECCAL', 'GDM', 'Stanford']:
             ## for numerical issues
-            mxs = np.logspace(-5, 3, 5000)*u.MeV
+            mxs_ = np.logspace(-5, 3, 5000)*u.MeV
         else:
-            mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
-        lims = cs_limit(mxs, ex=exp, medtype=medtype, phase=phase)
+            mxs_ = np.logspace(-6.5, 3.5, 1000)*u.MeV
+        lims = [cs_limit(mx, ex=exp, medtype=medtype, phase=phase) for mx in mxs_]
+    elif (~phase) and (med == 'heavy'):
+        if ex in ['BECCAL', 'GDM', 'Stanford']:
+            ## for numerical issues
+            mxs_ = np.logspace(-5, 3, 5000)*u.MeV
+        else:
+            mxs_ = np.logspace(-6.5, 3.5, 1000)*u.MeV
+        lims = cs_limit(mxs_, ex=exp, medtype=medtype, phase=phase)
     elif (phase) and (med == 'fixed_light'):
         lims = [cs_limit(mx, ex=exp, medtype='light', mphi=mphiratios*u.MeV, phase=phase) for mx in mxs]
     elif (~phase) and (med == 'fixed_light'):
@@ -88,6 +92,8 @@ def get_lim(ex, mphi_ratio = mphiratios, medtype='light',
 
     tm = Table()
     tm['mx'] = mxs
+    if (med == 'heavy') and (ex in ['BECCAL', 'GDM', 'Stanford']):
+        tm['mx'] = np.logspace(-5, 3, 5000)*u.MeV
     try:
         limT = Table([l for l in lims])
     except TypeError:
