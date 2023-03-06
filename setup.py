@@ -9,6 +9,7 @@ import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
+
 class PyTest(TestCommand):
     user_options = [('pytest-args=', 'a', "Arguments to pass to pytest")]
 
@@ -33,6 +34,7 @@ def readme():
     with open('README.md') as f:
         return f.read()
 
+
 INSTALL_REQUIRES = [
     'numpy>=1.4.0',
     'scipy',
@@ -54,7 +56,8 @@ INSTALL_REQUIRES = [
 setup(
     name='aidm',
     version=__version__,
-    description=('routines for finding limits on DM cross sections with atom interferometers'),
+    description=(
+        'routines for finding limits on DM cross sections with atom interferometers'),
     long_description=readme(),
     long_description_content_type="text/markdown",
     classifiers=[
@@ -75,7 +78,8 @@ setup(
     install_requires=INSTALL_REQUIRES,
     # extras_require=EXTRAS_REQUIRE,
     tests_require=['pytest==3.8.2',],
-    cmdclass={'test':PyTest},
+    cmdclass={'test': PyTest},
+    packages=['aidm'],
     include_package_data=True,
     zip_safe=False,
 )
