@@ -24,7 +24,8 @@ class Experiment:
         self.phimin = self.get_phimin()
 
     def get_phimin(self):
-       return (0.25*const.m_p.to(u.MeV)*self.A*self.deltax*self.amin*self.Texp).to('')
+        return (0.25*const.m_p.to(u.MeV)*self.A*self.deltax*self.amin*self.Texp).to('')
+
 
 @dataclass
 class GDM(Experiment):
@@ -39,9 +40,10 @@ class GDM(Experiment):
     etadm: float = 1.
     etabkg: float = 1.
 
+
 @dataclass
 class BECCAL(Experiment):
-    name: str="BECCAL"
+    name: str = "BECCAL"
     N: float = 8.7e7
     A: float = 87
     amin: float = (3.e-12*u.m/u.s**2*1./const.c).to(u.Hz)
@@ -52,9 +54,10 @@ class BECCAL(Experiment):
     etadm: float = 0.5
     etabkg: float = 0.001
 
+
 @dataclass
 class MAQRO(Experiment):
-    name: str='MAQRO'
+    name: str = 'MAQRO'
     N: float = 1.e10
     A: float = 60
     amin: float = (1.e-13*u.m/u.s**2*1./const.c).to(u.Hz)
@@ -64,6 +67,7 @@ class MAQRO(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.0
     etabkg: float = 1.0
+
 
 @dataclass
 class Pino(Experiment):
@@ -78,9 +82,10 @@ class Pino(Experiment):
     etadm: float = 0.5
     etabkg: float = 0.001
 
+
 @dataclass
 class Stanford(Experiment):
-    ## drop tower described in Asenbaum + (2020) PRL
+    # drop tower described in Asenbaum + (2020) PRL
     name: str = 'Stanford'
     N: float = 87*4.e6
     A: float = 87
@@ -89,3 +94,13 @@ class Stanford(Experiment):
     deltax: float = (0.067*u.m*lp).to(u.MeV**(-1))
     Texp: float = 1.910*u.s
     Nmeas: int = int((1.*u.yr/Texp).to(''))
+
+
+@dataclass
+class MAGIS(Experiment):
+    pass
+
+
+@dataclass
+class AION(Experiment):
+    pass
