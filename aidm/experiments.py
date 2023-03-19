@@ -98,9 +98,58 @@ class Stanford(Experiment):
 
 @dataclass
 class MAGIS(Experiment):
+    # using http://arxiv.org/abs/1812.00482
+    # FIX -- this doesn't have enough info!
     pass
 
 
 @dataclass
-class AION(Experiment):
-    pass
+class AION10(Experiment):
+    # using goal #s from https://arxiv.org/abs/1911.11755 Tab 1
+    name: str = 'AION-10'
+    N: float = 88*1.e5  # FIX
+    A: float = 88.  # use Sr-88 or Sr-87
+    amin: float = (1.*u.m/u.s**2*1./const.c).to(u.Hz)  # FIX
+    r: float = (1*u.m*lp).to(u.MeV**(-1))  # FIX
+    deltax: float = (10.*u.m*lp).to(u.MeV**(-1))  # FIX
+    Texp: float = 1.4*u.s
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
+
+
+@dataclass
+class AION100(Experiment):
+    # using goal #s from https://arxiv.org/abs/1911.11755 Tab 1
+    name: str = 'AION-100'
+    N: float = 88*1.e7  # FIX - assume 100x more than 10.
+    A: float = 88.  # use Sr-88 or Sr-87
+    amin: float = (1.*u.m/u.s**2*1./const.c).to(u.Hz)  # FIX
+    r: float = (1*u.m*lp).to(u.MeV**(-1))  # FIX
+    deltax: float = (10.*u.m*lp).to(u.MeV**(-1))  # FIX
+    Texp: float = 1.4*u.s
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
+
+
+@dataclass
+class AIONkm(Experiment):
+    # from https://arxiv.org/abs/1911.11755 Tab 1
+    name: str = 'AION-km'
+    N: float = 88*1.e8  # FIX -- assume 10x more than 100.
+    A: float = 88.  # use Sr-88 or Sr-87
+    amin: float = (1.*u.m/u.s**2*1./const.c).to(u.Hz)  # FIX
+    r: float = (1*u.m*lp).to(u.MeV**(-1))  # FIX
+    deltax: float = (10.*u.m*lp).to(u.MeV**(-1))  # FIX
+    Texp: float = 5.*u.s
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
+
+
+@dataclass
+class AEDGE(Experiment):
+    # from https://arxiv.org/abs/1908.00802 Tab 1
+    name: str = 'AEDGE'
+    N: float = 88*1.e9  # FIX -- assume 10x more than 1 km.
+    A: float = 88.  # use Sr-88 or Sr-87
+    amin: float = (1.*u.m/u.s**2*1./const.c).to(u.Hz)  # FIX
+    r: float = (1*u.m*lp).to(u.MeV**(-1))  # FIX
+    deltax: float = (10.*u.m*lp).to(u.MeV**(-1))  # FIX
+    Texp: float = 300.*u.s
+    Nmeas: int = int((1.*u.yr/Texp).to(''))
