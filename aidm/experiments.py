@@ -24,7 +24,8 @@ class Experiment:
         self.phimin = self.get_phimin()
 
     def get_phimin(self):
-       return (0.25*const.m_p.to(u.MeV)*self.A*self.deltax*self.amin*self.Texp).to('')
+    #    return (0.25*const.m_p.to(u.MeV)*self.A*self.deltax*self.amin*self.Texp).to('')
+        return 1./np.sqrt(self.N/self.A) ## sqrt(N_atoms)
 
 @dataclass
 class GDM(Experiment):
@@ -65,6 +66,10 @@ class MAQRO(Experiment):
     etadm: float = 1.0
     etabkg: float = 1.0
 
+    def __post_init__(self):
+        self.mT = (const.m_p*self.N).to(u.MeV)
+        self.phimin = 1.
+
 @dataclass
 class Pino(Experiment):
     name: str = "Pino"
@@ -77,6 +82,10 @@ class Pino(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
+
+    def __post_init__(self):
+        self.mT = (const.m_p*self.N).to(u.MeV)
+        self.phimin = 1.
 
 @dataclass
 class Stanford(Experiment):
