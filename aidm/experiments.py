@@ -99,6 +99,7 @@ class Stanford(Experiment):
 @dataclass
 class MAGIS(Experiment):
     # using http://arxiv.org/abs/1812.00482
+    # and https://arxiv.org/abs/2104.02835
     # FIX -- this doesn't have enough info!
     pass
 
@@ -146,10 +147,10 @@ class AIONkm(Experiment):
 class AEDGE(Experiment):
     # from https://arxiv.org/abs/1908.00802 Tab 1
     name: str = 'AEDGE'
-    N: float = 88*1.e9  # FIX -- assume 10x more than 1 km.
-    A: float = 88.  # use Sr-88 or Sr-87
+    N: float = 87*1.e11  # FIX -- assume 10x more than 1 km.
+    A: float = 87.  # use Sr-87 (696 nm clock transition)
     amin: float = (1.*u.m/u.s**2*1./const.c).to(u.Hz)  # FIX
     r: float = (1*u.m*lp).to(u.MeV**(-1))  # FIX
-    deltax: float = (10.*u.m*lp).to(u.MeV**(-1))  # FIX
-    Texp: float = 300.*u.s
+    deltax: float = (0.9*u.m*lp).to(u.MeV**(-1))  # FIX
+    Texp: float = 600.*u.s
     Nmeas: int = int((1.*u.yr/Texp).to(''))
