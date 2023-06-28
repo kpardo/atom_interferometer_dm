@@ -69,8 +69,11 @@ def phase_integral(q, mx, ex=gdm, vdm=vdm, ve=ve, vesc=vesc, real=True):
         res[np.isnan(res)] = 0.
     return res
 
-def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
-    formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
+def rate_integral(mx, ex=gdm, phase=False, exactphase=False, N2_only=False):
+    if N2_only:
+        formfacexp = lambda q: (ex.N*(formfac(q*ex.r.value))**2)
+    else:
+        formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
     if phase:
         integrand = lambda q: q*phase_integral(q, mx.value, ex=ex)*formfacexp(q)
         if exactphase:
@@ -90,15 +93,21 @@ def rate_integral(mx, ex=gdm, phase=False, exactphase=False):
         integrand = lambda q: q*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
     return quad_vec(integrand, 0., np.inf)[0]*u.MeV**2
 
-def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
+def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False, N2_only=False):
     if mphi == None:
         mphi = 1.e-5*mx
 
     if ex.name in ['GDM', 'BECCAL', 'Stanford']:
-        formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(np.exp(-(0.5*q*ex.r.value)**2))**2)
+        if N2_only:
+            formfacexp = lambda q: (ex.N*(np.exp(-(0.5*q*ex.r.value)**2))**2)
+        else:
+            formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(np.exp(-(0.5*q*ex.r.value)**2))**2)
 
     else:
-        formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
+        if N2_only:
+            formfacexp = lambda q: (ex.N*(formfac(q*ex.r.value))**2)
+        else:
+            formfacexp = lambda q: (1+ex.A*helmformfac(q, ex=ex)**2+ex.N*(formfac(q*ex.r.value))**2)
 
     if phase:
         integrand = lambda q: q/(q**2 + mphi.value**2)**2*phase_integral(q, mx.value, ex=ex)*formfacexp(q)
@@ -112,15 +121,19 @@ def light_rate_integral(mx, ex=gdm, mphi=None, phase=False, exactphase=False):
             return simpson(integrand(qs), x=qs)*u.MeV**(-2)
     else:
         integrand = lambda q: q/(q**2 + mphi.value**2)**2*(1.-np.sin(q*ex.deltax.value)/(q*ex.deltax.value))*formfacexp(q)*expfac(q, mx)
+        if (ex.name in ['GDM', 'BECCAL', 'Stanford']) and (N2_only):
+            qs = np.logspace(np.log10(1./ex.deltax.value)-10,
+                             np.log10(1./ex.deltax.value)+10, 100000)
+            return simpson(integrand(qs), x=qs)*u.MeV**(-2)
         return quad_vec(integrand, 1.e-40, 1.)[0]*u.MeV**(-2)
 
 
-def rate(mx, ex=gdm, medtype = 'light', mphi=None, phase=False):
+def rate(mx, ex=gdm, medtype = 'light', mphi=None, phase=False, N2_only=False):
     if medtype == 'heavy':
         rp = rate_prefac(mx, ex=ex)
-        ri = rate_integral(mx, ex=ex, phase=phase)
+        ri = rate_integral(mx, ex=ex, phase=phase, N2_only=N2_only)
 
     elif medtype == 'light':
         rp = light_rate_prefac(mx, ex=ex, mphi=mphi)
-        ri = light_rate_integral(mx, ex=ex, mphi=mphi, phase=phase)
+        ri = light_rate_integral(mx, ex=ex, mphi=mphi, phase=phase, N2_only=N2_only)
     return rp*ri
