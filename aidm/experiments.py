@@ -39,6 +39,7 @@ class GDM(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.
     etabkg: float = 1.
+    Nind: float = 1.e8
 
 
 @dataclass
@@ -53,6 +54,7 @@ class BECCAL(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
+    Nind: float = 1.e6
 
 
 @dataclass
@@ -67,6 +69,7 @@ class MAQRO(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 1.0
     etabkg: float = 1.0
+    Nind: float = 1.0
 
 
 @dataclass
@@ -81,6 +84,7 @@ class Pino(Experiment):
     Nmeas: int = int((1.*u.yr/Texp).to(''))
     etadm: float = 0.5
     etabkg: float = 0.001
+    Nind: float = 1.0
 
 
 @dataclass
@@ -94,6 +98,7 @@ class Stanford(Experiment):
     deltax: float = (0.067*u.m*lp).to(u.MeV**(-1))
     Texp: float = 1.910*u.s
     Nmeas: int = int((1.*u.yr/Texp).to(''))
+    Nind: float = 4.e6
 
 
 @dataclass

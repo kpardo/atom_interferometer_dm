@@ -21,7 +21,8 @@ import aidm.experiments as x
 from aidm.cross_sections import cs_limit, cs_limit_mod
 
 # exps = ['GDM', 'MAQRO', 'Pino', 'BECCAL', 'Stanford']
-exps = ['GDM', 'BECCAL', 'Stanford']
+exps = ['MAQRO', 'Pino', 'BECCAL', 'Stanford', 'GDM']
+# exps = ['GDM', 'BECCAL', 'Stanford']
 # mxs = np.logspace(-6.5, 3.5, 1000)*u.MeV
 mxs = np.logspace(-5, 3, 1000)*u.MeV
 

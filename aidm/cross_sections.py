@@ -20,9 +20,16 @@ def cs_limit(mx, ex=gdm, medtype='light',mphi=None, phase=False, N2_only=False):
         return (std['phi'])*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase, N2_only=N2_only)*u.cm**2
     else:
         max_V = ave['v'] - std['v'] ## e.g., 1 sigma lower than average.
-        stds = std['v']/ave['v']
+        # stds = std['v']/ave['v']
+        stdV = 1./np.sqrt(ex.Nind)
+        s = rate(mx, ex=ex, medtype=medtype, mphi=mphi,
+                    phase=phase, N2_only=N2_only)
+        V = np.exp(-s/ex.Nind)
+        stds = np.abs(stdV/V)
         # smin = -1.*np.log(max_V)
-        return ((stds+(-1.*np.log(ave['v'])))/ex.Nmeas**(0.5))*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase, N2_only=N2_only)*u.cm**2
+        # return ((stds+(-1.*np.log(ave['v'])))/ex.Nmeas**(0.5))*1./rate(mx,ex=ex, medtype=medtype, mphi=mphi, phase=phase, N2_only=N2_only)*u.cm**2
+        # return ((stds+(-1.*np.log(ave['v'])))/ex.Nmeas**(0.5))/rate(mx, ex=ex, medtype=medtype, mphi=mphi, phase=phase, N2_only=N2_only)*u.cm**2
+        return ((stds + (-1*np.log(ave['v'])))/ex.Nmeas**(0.5))*ex.Nind/rate(mx, ex=ex, medtype=medtype, mphi=mphi, phase=phase, N2_only=N2_only)*u.cm**2
 
 def noise_mod(gammavis = 0.5, ex=gdm):
     return (4*(gammavis**(-1)-1)/ex.Nmeas)**(1./2.)
