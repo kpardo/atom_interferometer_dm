@@ -10,4 +10,9 @@ your own atom interferometer experiments can be done in the
 The [`drivers/'](drivers/) directory contains the scripts needed to obtain the
 limits and make the plots seen in the paper.
 
+NOTE: The code does allow you to run decoherence rates for the atom
+interferometer and BEC experiments. However, these rates wrongly include an N^2
+enhancement that does not exist for these experiments. We recommend only
+running the phase measurements for these types of experiments.
+
 
